@@ -210,8 +210,15 @@ router.post('/user', function(req, res, next) {
             { name: 'gender', type: 'number', required: true },
             { name: 'otherInfo', type: 'string', required: false },
             { name: 'borrowed', type: 'undefined', required: true }
-        ]) && /^\w{4,63}$/.test(req.body.username) && /^[ -~]{6,63}$/.test(req.body.password)) {
+        ]) || !/^\w{4,63}$/.test(req.body.username) || !/^[ -~]{6,63}$/.test(req.body.password)) {
 
+        // You fucked up...
+        return res.json({ 'status': 400, 'msg': 'Bad Request', 'result': null });
+    }
+
+    // date from string
+    req.body.birthdate = new Date(req.body.birthdate);
+    if (isNaN(req.body.birthdate.getTime())) {
         // You fucked up...
         return res.json({ 'status': 400, 'msg': 'Bad Request', 'result': null });
     }
@@ -297,7 +304,7 @@ router.patch('/user/:id(\\d+)', function(req, res, next) {
     ]);
 
     if (!purified || typeof purified !== 'object' || Object.keys(purified).length === 0 ||
-        (typeof purified.password !== 'undefined' && /^[ -~]{6,63}$/.test(purified.password))) {
+        (typeof purified.password !== 'undefined' && !/^[ -~]{6,63}$/.test(purified.password))) {
         // You fucked up...
         return res.json({ 'status': 400, 'msg': 'Bad Request', 'result': null });
     }
@@ -333,7 +340,7 @@ router.patch('/user/:username(\\w{4,63})', function(req, res, next) {
     ]);
 
     if (!purified || typeof purified !== 'object' || Object.keys(purified).length === 0 ||
-        (typeof purified.password !== 'undefined' && /^[ -~]{6,63}$/.test(purified.password))) {
+        (typeof purified.password !== 'undefined' && !/^[ -~]{6,63}$/.test(purified.password))) {
         // You fucked up...
         return res.json({ 'status': 400, 'msg': 'Bad Request', 'result': null });
     }
@@ -470,9 +477,16 @@ router.post('/loan', function(req, res, next) {
         // You fucked up...
         return res.json({ 'status': 400, 'msg': 'Bad Request', 'result': null });
     }
+
     // date from string
     req.body.borrowDate = new Date(req.body.borrowDate);
     req.body.dueDate = new Date(req.body.dueDate);
+    if (isNaN(req.body.borrowDate.getTime()) || isNaN(req.body.dueDate.getTime()) ||
+        req.body.borrowDate.getTime() >= req.body.dueDate.getTime()) {
+
+        // You fucked up...
+        return res.json({ 'status': 400, 'msg': 'Bad Request', 'result': null });
+    }
 
     database.query(
         mysql.format('INSERT INTO `loans` (`bookId`, `userId`, `borrowDate`, `dueDate`, `otherInfo`) VALUES (?, ?, ?, ?, ?)', [
@@ -517,12 +531,12 @@ router.get('/loan/:id(\\d+)', function(req, res, next) {
 router.patch('/loan/:id(\\d+)', function(req, res, next) {
     // Purify data
     let purified = purifier(req.body, [
-		{ name: 'id', type: 'undefined', required: true },
-		{ name: 'bookId', type: 'number', required: false },
-		{ name: 'userId', type: 'number', required: false },
-		{ name: 'borrowDate', type: 'string', required: false },
-		{ name: 'dueDate', type: 'string', required: false },
-		{ name: 'otherInfo', type: 'string', required: false }
+        { name: 'id', type: 'undefined', required: true },
+        { name: 'bookId', type: 'number', required: false },
+        { name: 'userId', type: 'number', required: false },
+        { name: 'borrowDate', type: 'string', required: false },
+        { name: 'dueDate', type: 'string', required: false },
+        { name: 'otherInfo', type: 'string', required: false }
     ]);
 
     if (!purified || typeof purified !== 'object' || Object.keys(purified).length === 0) {
