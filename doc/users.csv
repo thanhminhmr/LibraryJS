@@ -1,0 +1,6 @@
+﻿id;username;password;role;fullname;birthdate;gender;otherInfo
+1;abc;abc123;0;Nguyễn Văn A;1996-03-23;0;
+2;def;def456;1;Phạm Thị B;1987-05-20;1;
+3;xyz;xyz789;0;Trần Văn C;1998-02-14;2;
+4;jkl;jkl001;1;Nguyễn Thị D;1979-03-25;0;
+5;gintoki;nnsvvei;1;Đặng Văn K;1980-05-25;1;

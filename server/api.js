@@ -31,7 +31,7 @@ var purifier = function(obj, struct) {
 }
 
 // ===========================================
-// THIS THING IS NOT AN REST API !!!
+// THIS THING IS NOT MEAN TO BE REST API !!!
 // JUST `SOMETHING` THAT WORK FOR THE DEMO !!!
 
 // parses incoming requests with JSON
@@ -80,7 +80,7 @@ router.post('/book', function(req, res, next) {
             { name: 'author', type: 'string', required: true },
             { name: 'publisher', type: 'string', required: true },
             { name: 'quantity', type: 'number', required: true },
-            { name: 'otherInfo', type: 'string', required: false },
+            { name: 'otherInfo', type: 'string', required: true },
             { name: 'borrowed', type: 'undefined', required: true }
         ])) {
 
@@ -126,10 +126,10 @@ router.get('/book/:id(\\d+)', function(req, res, next) {
 });
 
 /**
- * PATCH /book/:id
+ * POST /book/:id
  * Update book info by id
  */
-router.patch('/book/:id(\\d+)', function(req, res, next) {
+router.post('/book/:id(\\d+)', function(req, res, next) {
     // Purify data
     let purified = purifier(req.body, [
         { name: 'id', type: 'undefined', required: true },
@@ -208,7 +208,7 @@ router.post('/user', function(req, res, next) {
             { name: 'fullname', type: 'string', required: true },
             { name: 'birthdate', type: 'string', required: true },
             { name: 'gender', type: 'number', required: true },
-            { name: 'otherInfo', type: 'string', required: false },
+            { name: 'otherInfo', type: 'string', required: true },
             { name: 'borrowed', type: 'undefined', required: true }
         ]) || !/^\w{4,63}$/.test(req.body.username) || !/^[ -~]{6,63}$/.test(req.body.password)) {
 
@@ -286,10 +286,10 @@ router.get('/user/:username(\\w{4,63})', function(req, res, next) {
 });
 
 /**
- * PATCH /user/:id
+ * POST /user/:id
  * Update user info by id
  */
-router.patch('/user/:id(\\d+)', function(req, res, next) {
+router.post('/user/:id(\\d+)', function(req, res, next) {
     // Purify data
     let purified = purifier(req.body, [
         { name: 'id', type: 'undefined', required: true },
@@ -322,10 +322,10 @@ router.patch('/user/:id(\\d+)', function(req, res, next) {
 });
 
 /**
- * PATCH /user/:username
+ * POST /user/:username
  * Update user info by username
  */
-router.patch('/user/:username(\\w{4,63})', function(req, res, next) {
+router.post('/user/:username(\\w{4,63})', function(req, res, next) {
     // Purify data
     let purified = purifier(req.body, [
         { name: 'id', type: 'undefined', required: true },
@@ -471,7 +471,7 @@ router.post('/loan', function(req, res, next) {
             { name: 'userId', type: 'number', required: true },
             { name: 'borrowDate', type: 'string', required: true },
             { name: 'dueDate', type: 'string', required: true },
-            { name: 'otherInfo', type: 'string', required: false }
+            { name: 'otherInfo', type: 'string', required: true }
         ])) {
 
         // You fucked up...
@@ -525,10 +525,10 @@ router.get('/loan/:id(\\d+)', function(req, res, next) {
 });
 
 /**
- * PATCH /loan/:id
+ * POST /loan/:id
  * Update loan info by id
  */
-router.patch('/loan/:id(\\d+)', function(req, res, next) {
+router.post('/loan/:id(\\d+)', function(req, res, next) {
     // Purify data
     let purified = purifier(req.body, [
         { name: 'id', type: 'undefined', required: true },
